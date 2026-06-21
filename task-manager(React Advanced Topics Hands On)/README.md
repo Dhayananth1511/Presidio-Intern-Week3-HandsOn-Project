@@ -2,7 +2,7 @@
 
 A modern, high-performance task management application built as a comprehensive learning journey from basic React to production-grade patterns.
 
-## 🛠️ Performance-Oriented Tech Stack
+## Performance-Oriented Tech Stack
 - **Framework**: React 19 + TypeScript
 - **Bundler**: Vite (Ultra-fast build tool)
 - **Routing**: React Router 7 (Single Page Navigation)
