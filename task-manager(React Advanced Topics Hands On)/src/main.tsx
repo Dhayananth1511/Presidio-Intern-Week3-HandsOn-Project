@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import App from './App.tsx'
 import { ThemeProvider } from './context/ThemeContext.tsx'
+import { AuthProvider } from './context/AuthContext.tsx'
 import { store } from './store/store.ts'
 import ErrorBoundary from './components/ErrorBoundary.tsx'
 import './index.css'
@@ -17,11 +18,13 @@ createRoot(document.getElementById('root')!).render(
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <Provider store={store}>
-          <ThemeProvider>
-            <BrowserRouter>
-              <App />
-            </BrowserRouter>
-          </ThemeProvider>
+          <AuthProvider>
+            <ThemeProvider>
+              <BrowserRouter>
+                <App />
+              </BrowserRouter>
+            </ThemeProvider>
+          </AuthProvider>
         </Provider>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>

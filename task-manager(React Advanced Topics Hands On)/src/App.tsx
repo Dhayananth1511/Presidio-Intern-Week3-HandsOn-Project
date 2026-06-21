@@ -3,10 +3,14 @@ import Navbar from './components/Navbar'
 
 function App() {
   return (
-    <>
-      <Navbar />
-      <AppRoutes />
-    </>
+    <div className="app-container">
+      <header>
+        <Navbar />
+      </header>
+      <main id="main-content">
+        <AppRoutes />
+      </main>
+    </div>
   )
 }
 

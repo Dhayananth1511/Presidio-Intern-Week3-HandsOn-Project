@@ -24,11 +24,28 @@ body {
   box-sizing: border-box;
 }
 
+/* Layout Containers */
 .app-container {
-  max-width: 800px;
+  max-width: 1000px; /* Slightly wider for better desktop layout */
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem; /* Mobile default */
   min-height: 100vh;
+}
+
+/* Responsive Padding */
+@media (min-width: 768px) {
+  .app-container {
+    padding: 2rem;
+  }
+}
+
+/* Responsive Grid for Tasks */
+.task-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  padding: 0;
+  margin-top: 1rem;
 }
 
 /* Glassmorphism Classes */
@@ -36,15 +53,30 @@ body {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--glass-border);
-  border-radius: 16px;
-  padding: 1.5rem;
+  border-radius: 20px;
+  padding: 1.5rem; /* Mobile default */
   box-shadow: var(--shadow);
   transition: var(--transition);
+  background: var(--card-light);
 }
 
-.glass-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+@media (min-width: 768px) {
+  .glass-card {
+    padding: 2.5rem;
+  }
+}
+
+/* Screen reader only utility (Accessibility) */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
 
 /* Typography */
@@ -76,6 +108,14 @@ input:focus {
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
 }
 
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--primary);
+}
+
 button {
   background-color: var(--primary);
   color: white;
@@ -102,69 +142,106 @@ button:active {
 /* Navigation */
 nav {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  gap: 2rem;
-  padding: 1rem 2rem;
-  margin-bottom: 3rem;
+  flex-wrap: wrap; /* Added to prevent overflow */
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  margin-bottom: 2rem;
   background: var(--card-light);
   backdrop-filter: blur(10px);
-  border-radius: 9999px;
+  border-radius: 24px;
   position: sticky;
   top: 1rem;
   z-index: 100;
   border: 1px solid var(--glass-border);
 }
 
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
 nav a {
   text-decoration: none;
-  font-weight: 500;
-  color: inherit;
-  opacity: 0.7;
+  font-weight: 600;
+  color: var(--primary); /* Improved contrast */
+  opacity: 0.9;
   transition: var(--transition);
+}
+
+.dark nav a {
+  color: #c7d2fe; /* Brighter indigo for better contrast in dark mode */
 }
 
 nav a:hover {
   opacity: 1;
-  color: var(--primary);
+  color: var(--primary) !important;
+  transform: translateY(-1px);
 }
 
 /* List Styles */
-ul {
-  list-style: none;
-  padding: 0;
+.task-grid {
   display: grid;
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  padding: 0;
+  margin-top: 1rem;
 }
 
-li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+li, .glass-card {
   background: var(--card-light);
-  padding: 1rem 1.5rem;
-  border-radius: 12px;
-  border: 1px solid var(--glass-border);
-  transition: var(--transition);
+  color: var(--text-light);
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-li:hover {
-  border-color: var(--primary);
+.dark li, .dark .glass-card {
+  background: rgba(30, 41, 59, 0.82); /* Deeper dark for higher contrast */
+  color: var(--text-dark);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Spinner for loading indicator */
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid rgba(0, 0, 0, 0.1);
-  border-left-color: var(--primary);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin: 0 auto 1rem;
+/* API Task Card Adjustments */
+.dark .api-task-item {
+  background: rgba(15, 23, 42, 0.6) !important;
+  border-color: rgba(99, 102, 241, 0.3) !important;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
+/* Mobile-Friendly Adjustments */
+@media (max-width: 640px) {
+  .app-container {
+    padding: 0.75rem;
+  }
+
+  h1 {
+    font-size: 1.75rem;
+    text-align: center;
+  }
+  
+  nav {
+    justify-content: center;
+    border-radius: 16px;
+    padding: 1rem;
+  }
+
+  .nav-links {
+    width: 100%;
+    justify-content: center;
+    order: 2;
+  }
+
+  .nav-auth-theme {
+    width: 100%;
+    justify-content: space-between;
+    order: 1;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--glass-border);
+  }
+  
+  /* Stack form elements */
+  .responsive-form {
+    grid-template-columns: 1fr !important;
   }
 }

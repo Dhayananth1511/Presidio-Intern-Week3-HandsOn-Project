@@ -46,24 +46,32 @@ function Tasks() {
       <h1>Dashboard</h1>
       
       {/* Local State Tasks Section */}
-      <section>
-        <h2 style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>Local Tasks (Zustand)</h2>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '1rem', marginBottom: '2rem' }}>
-          <input
-            value={taskInput}
-            onChange={(e) => setTaskInput(e.target.value)}
-            placeholder="What needs to be done?"
-            onKeyDown={(e) => e.key === 'Enter' && handleAddTask()}
-            style={{ marginBottom: 0 }}
-          />
-          <button onClick={handleAddTask}>Add Task</button>
+      <section aria-labelledby="local-tasks-title">
+        <h2 id="local-tasks-title" style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>Local Tasks (Zustand)</h2>
+        
+        <div style={{ marginBottom: '2rem' }}>
+          <label htmlFor="task-input">New Task Name</label>
+          <div className="responsive-form" style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '1rem' }}>
+            <input
+              id="task-input"
+              value={taskInput}
+              onChange={(e) => setTaskInput(e.target.value)}
+              placeholder="e.g. Complete Week 3 project"
+              onKeyDown={(e) => e.key === 'Enter' && handleAddTask()}
+              style={{ marginBottom: 0 }}
+            />
+            <button onClick={handleAddTask} aria-label="Add new task to local list">Add Task</button>
+          </div>
         </div>
 
         <div style={{ marginBottom: '2rem' }}>
+          <label htmlFor="search-input">Search Tasks</label>
           <input
+            id="search-input"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="🔍 Search your tasks..."
+            placeholder="🔍 Narrow down your tasks..."
+            aria-label="Search through your local tasks"
             style={{ 
               fontSize: '0.9rem', 
               background: 'rgba(0,0,0,0.03)',
@@ -72,36 +80,38 @@ function Tasks() {
           />
         </div>
 
-        <div style={{ marginTop: '2rem' }}>
+        <div style={{ marginTop: '3rem' }}>
           <h3 style={{ marginBottom: '1rem', opacity: 0.6, fontSize: '0.8rem', textTransform: 'uppercase' }}>
             Your Local Tasks ({filteredTasks.length})
           </h3>
-          <ul>
+          <div className="task-grid" role="list">
             {filteredTasks.length > 0 ? (
               filteredTasks.map((item) => (
-                <TaskCard 
-                  key={item.id} 
-                  task={item} 
-                  onDelete={handleDeleteTask} 
-                />
+                <div role="listitem" key={item.id}>
+                  <TaskCard 
+                    task={item} 
+                    onDelete={handleDeleteTask} 
+                  />
+                </div>
               ))
             ) : (
-              <p style={{ opacity: 0.5, textAlign: 'center', padding: '2rem' }}>No local tasks found...</p>
+              <p style={{ opacity: 0.5, textAlign: 'center', padding: '2rem', gridColumn: '1 / -1' }}>No local tasks found...</p>
             )}
-          </ul>
+          </div>
         </div>
       </section>
 
-      <hr style={{ margin: '3rem 0', opacity: 0.1 }} />
+      <hr style={{ margin: '3rem 0', opacity: 0.1 }} aria-hidden="true" />
 
       {/* API Consumption Hands-On Section */}
-      <section>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-          <h2 style={{ fontSize: '1.2rem' }}>API Data (TanStack Query)</h2>
+      <section aria-labelledby="api-tasks-title">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+          <h2 id="api-tasks-title" style={{ fontSize: '1.2rem' }}>API Data (TanStack Query)</h2>
           <button 
             onClick={() => refetch()} 
             style={{ fontSize: '0.8rem', padding: '0.5rem 1rem' }}
             disabled={isLoading}
+            aria-label="Refetch tasks from external API"
           >
             {isLoading ? 'Refetching...' : 'Refresh API Data'}
           </button>
@@ -109,7 +119,7 @@ function Tasks() {
 
         {/* Concept: Handling Loading State */}
         {isLoading && (
-          <div style={{ textAlign: 'center', padding: '2rem' }}>
+          <div role="status" aria-busy="true" style={{ textAlign: 'center', padding: '2rem' }}>
             <div className="spinner"></div>
             <p>Fetching tasks from JSONPlaceholder...</p>
           </div>
@@ -117,7 +127,7 @@ function Tasks() {
 
         {/* Concept: Handling Error State */}
         {isError && (
-          <div style={{ 
+          <div role="alert" style={{ 
             padding: '1.5rem', 
             background: 'rgba(255,0,0,0.05)', 
             border: '1px solid rgba(255,0,0,0.1)',
@@ -131,31 +141,39 @@ function Tasks() {
           </div>
         )}
 
-        {/* Displaying API Data */}
+        {/* Displaying API Data in a responsive grid */}
         {apiTasks && (
-          <ul style={{ opacity: isLoading ? 0.5 : 1 }}>
+          <div className="task-grid" role="list" style={{ opacity: isLoading ? 0.5 : 1 }}>
             {apiTasks.map((task) => (
-              <li key={task.id} style={{ 
-                padding: '1rem', 
-                marginBottom: '0.5rem', 
-                background: 'rgba(255,255,255,0.5)',
-                borderRadius: '8px',
+              <div key={task.id} role="listitem" className="glass-card api-task-item" style={{ 
+                padding: '1.25rem', 
+                background: 'rgba(255,255,255,0.4)',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '1rem'
+                gap: '1rem',
+                borderWidth: '1px'
               }}>
+                <span 
+                  aria-hidden="true"
+                  style={{ 
+                    width: '12px', 
+                    height: '12px', 
+                    borderRadius: '50%', 
+                    flexShrink: 0,
+                    background: task.completed ? '#4caf50' : '#ffa726'
+                  }}
+                ></span>
                 <span style={{ 
-                  width: '12px', 
-                  height: '12px', 
-                  borderRadius: '50%', 
-                  background: task.completed ? '#4caf50' : '#ffa726'
-                }}></span>
-                <span style={{ textDecoration: task.completed ? 'line-through' : 'none', opacity: task.completed ? 0.5 : 1 }}>
+                  textDecoration: task.completed ? 'line-through' : 'none', 
+                  opacity: task.completed ? 0.5 : 1,
+                  fontSize: '0.95rem'
+                }}>
                   {task.title}
+                  <span className="sr-only"> - status: {task.completed ? 'completed' : 'pending'}</span>
                 </span>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </section>
     </div>
