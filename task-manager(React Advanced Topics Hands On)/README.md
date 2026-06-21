@@ -6,7 +6,8 @@ A modern, high-performance task management application built as a comprehensive 
 - **Framework**: React 19 + TypeScript
 - **Bundler**: Vite (Ultra-fast build tool)
 - **Routing**: React Router 7 (Single Page Navigation)
-- **State Management**: Zustand (Primary) & Redux Toolkit (Secondary)
+- **State Management**: Zustand (Primary), Redux Toolkit (Secondary)
+- **Data Fetching**: TanStack Query v5 (Server State & Caching)
 - **UI Architecture**: Glassmorphism + CSS Variable Design System
 
 ---
@@ -105,6 +106,29 @@ A modern, high-performance task management application built as a comprehensive 
 **Step 20: Lighthouse Audit**
 - *Goal*: Audit for SEO, Accessibility, and Performance.
 - *Why*: Ensures the final product is professional, fast, and accessible to everyone.
+
+---
+
+### Phase 6: Advanced API Consumption
+**Step 21: Environment Variables (.env)**
+- *Goal*: Externalize API URLs and configuration.
+- *Why*: Keeps sensitive settings out of source code and allows multiple environments (Dev/Prod).
+
+**Step 22: Async/Await Service Layer**
+- *Goal*: Implement clean data fetching with `try/catch`.
+- *Why*: Makes asynchronous code readable and provides robust error handling.
+
+**Step 23: TanStack Query (Server State)**
+- *Goal*: Implement `useQuery` for fetching and caching.
+- *Why*: Eliminates boilerplate for loading/error states and adds intelligent data synchronization.
+
+**Step 24: Loading & Error Patterns**
+- *Goal*: Implement spinners and user-friendly error messages.
+- *Why*: Improves UX by keeping the user informed of the app's current network state.
+
+**Step 25: React Query DevTools**
+- *Goal*: Inspect network cache and stale data.
+- *Why*: Powerful tool for debugging complex data flows and cache invalidation.
 
 
 ## Getting Started
