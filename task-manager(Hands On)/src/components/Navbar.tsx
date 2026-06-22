@@ -2,57 +2,62 @@ import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { ThemeContext } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 function Navbar() {
   const themeContext = useContext(ThemeContext);
-  const { user, login, logout } = useAuth();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
   if (!themeContext) return null;
 
   const { theme, toggleTheme } = themeContext;
 
+  const handleLogout = async () => {
+    await logout();
+    navigate('/');
+  };
+
   return (
-    <nav aria-label="Main Navigation">
-      <div className="nav-links">
-        <Link to="/" className="nav-link" aria-label="Go to Home Page">Home</Link>
-        <Link to="/tasks" className="nav-link" aria-label="Manage your tasks">Tasks</Link>
-        <Link to="/settings" className="nav-link" aria-label="App Settings">Settings</Link>
+    <nav className="flex flex-wrap items-center justify-between p-4 mb-8 glass-card sticky top-4 z-50 mx-4 lg:mx-auto max-w-6xl" aria-label="Main Navigation">
+      <div className="flex gap-6 items-center">
+        <Link to="/" className="text-xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent hover:scale-105 transition-transform">
+          ProTask
+        </Link>
+        <div className="hidden md:flex gap-4">
+          <Link to="/" className="nav-link">Home</Link>
+          <Link to="/tasks" className="nav-link">Tasks</Link>
+          <Link to="/settings" className="nav-link">Settings</Link>
+        </div>
       </div>
-      
-      <div className="nav-auth-theme" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-        {/* Concept: User Session Display */}
+
+      <div className="flex items-center gap-4">
         {user ? (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span style={{ fontSize: '0.85rem', opacity: 0.8 }}>Hi, <strong>{user}</strong></span>
+          <div className="flex items-center gap-3">
+            <span className="text-sm font-semibold opacity-75 hidden sm:inline">
+              Hi, <span className="text-indigo-600 dark:text-indigo-400">{user}</span>
+            </span>
             <button 
-              onClick={logout} 
-              aria-label="Logout"
-              style={{ padding: '0.4rem 0.8rem', fontSize: '0.7rem', backgroundColor: '#64748b' }}
+              onClick={handleLogout} 
+              className="px-4 py-2 text-xs font-bold uppercase tracking-wider bg-slate-200 dark:bg-slate-800 hover:bg-red-500 hover:text-white rounded-lg transition-all"
             >
-              Sign Out
+              Log Out
             </button>
           </div>
         ) : (
-          <button 
-            onClick={() => login("Dhayananth")} 
-            aria-label="Sign in as dummy user"
-            style={{ padding: '0.4rem 0.8rem', fontSize: '0.7rem' }}
-          >
-            Sign In
-          </button>
+          <Link to="/login">
+            <button className="px-5 py-2 bg-indigo-600 text-white text-sm font-bold rounded-lg hover:bg-indigo-700 shadow-md transition-all">
+              Login
+            </button>
+          </Link>
         )}
 
         <button 
           onClick={toggleTheme} 
+          className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-lg hover:rotate-12 transition-all shadow-inner"
           aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-          aria-pressed={theme === 'dark'}
-          style={{ 
-            padding: '0.5rem 1rem', 
-            fontSize: '0.8rem'
-          }}
         >
-          <span aria-hidden="true">{theme === 'light' ? '🌙' : '☀️'}</span>
-          <span className="sr-only">{theme === 'light' ? 'Dark' : 'Light'} Mode</span>
+          {theme === 'light' ? '🌙' : '☀️'}
         </button>
       </div>
     </nav>

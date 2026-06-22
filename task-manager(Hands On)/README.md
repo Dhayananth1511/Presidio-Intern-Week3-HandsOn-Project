@@ -11,7 +11,9 @@ A modern, high-performance task management application built as a comprehensive 
 - **Forms & Validation**: React Hook Form + Zod
 - **Analytics**: Chart.js (Data Visualization)
 - **Persistence**: Zustand Persist (localStorage Sync)
-- **UI Architecture**: Glassmorphism + CSS Variable Design System
+- **Backend Architecture**: Express.js (Modular/Service-based Pattern)
+- **Styles**: Tailwind CSS v4 (Utility-first with Glassmorphism)
+- **Auth**: Secure JWT + HttpOnly Cookies (XSS-Proof)
 
 ---
 
@@ -158,6 +160,58 @@ A modern, high-performance task management application built as a comprehensive 
 **Step 30: Zustand Persistence**
 - *Goal*: Sync the application state with `localStorage`.
 - *Why*: Prevents data loss on page refresh, making the app feel like a real production tool.
+
+---
+
+### Phase 9: Industrial Backend & Security
+**Step 31: Modular Express Architecture**
+- *Goal*: Separate logic into Controllers, Services, and Routes.
+- *Why*: Mirrors company-level project structures used at Google, Netflix, etc.
+
+**Step 32: Secure JWT (HttpOnly Cookies)**
+- *Goal*: Store session tokens in a browser-locked cookie vault.
+- *Why*: Protects users from XSS attacks that could steal their identity.
+
+**Step 33: Auth Middleware & Protected Routes**
+- *Goal*: Block unauthenticated users from seeing sensitive data.
+- *Why*: Ensures that only verified "Active ID Cards" can open the Dashboard.
+
+---
+
+### Phase 10: Scalable UI & Modern CSS
+**Step 34: Migration to Tailwind CSS v4**
+- *Goal*: Refactor custom CSS into utility-first classes.
+- *Why*: Faster development speed and guaranteed design consistency.
+
+**Step 35: App/Server Split Pattern**
+- *Goal*: Separate the App logic (`app.js`) from the network startup (`server.js`).
+- *Why*: Critical for enterprise testing and high-availability deployments.
+
+## 🔄 The Secure Authentication Workflow
+
+Below is the complete architectural loop of how a user's identity is verified from the login click to the final dashboard render.
+
+```mermaid
+sequenceDiagram
+    participant User as 👤 User (UI)
+    participant React as ⚛️ React (Frontend)
+    participant Express as 🚀 Express (Backend)
+    participant JWT as 🎫 JWT Authority
+
+    User->>React: Enters Email/Password
+    React->>Express: POST /api/login
+    Express->>JWT: Sign Payload (Secret Key)
+    JWT-->>Express: Signed Token (ID Card)
+    Express-->>React: Set-Cookie: auth_token (HttpOnly)
+    Note right of React: JavaScript cannot see this cookie!
+
+    User->>React: Clicks "Tasks Dashboard"
+    React->>Express: GET /api/me (Cookies auto-sent by browser)
+    Express->>JWT: Verify "Wax Seal" on Token
+    JWT-->>Express: Success (User is valid)
+    Express-->>React: 200 OK (User Data)
+    React-->>User: Renders Tasks & Protected Content
+```
 
 
 ## Getting Started

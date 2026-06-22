@@ -1,247 +1,52 @@
-:root {
-  --primary: #6366f1;
-  --primary-hover: #4f46e5;
-  --bg-light: #f8fafc;
-  --bg-dark: #0f172a;
-  --card-light: rgba(255, 255, 255, 0.8);
-  --card-dark: rgba(30, 41, 59, 0.7);
-  --text-light: #1e293b;
-  --text-dark: #f1f5f9;
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
+@import "tailwindcss";
 
-body {
-  margin: 0;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  transition: var(--transition);
-}
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-900 transition-colors duration-300;
+  }
 
-* {
-  box-sizing: border-box;
-}
-
-/* Layout Containers */
-.app-container {
-  max-width: 1000px; /* Slightly wider for better desktop layout */
-  margin: 0 auto;
-  padding: 1rem; /* Mobile default */
-  min-height: 100vh;
-}
-
-/* Responsive Padding */
-@media (min-width: 768px) {
-  .app-container {
-    padding: 2rem;
+  .dark {
+    @apply bg-slate-950 text-slate-100;
   }
 }
 
-/* Responsive Grid for Tasks */
-.task-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
-  padding: 0;
-  margin-top: 1rem;
-}
-
-/* Glassmorphism Classes */
-.glass-card {
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
-  border-radius: 20px;
-  padding: 1.5rem; /* Mobile default */
-  box-shadow: var(--shadow);
-  transition: var(--transition);
-  background: var(--card-light);
-}
-
-@media (min-width: 768px) {
+@layer components {
   .glass-card {
-    padding: 2.5rem;
-  }
-}
-
-/* Screen reader only utility (Accessibility) */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
-}
-
-/* Typography */
-h1 {
-  font-weight: 800;
-  letter-spacing: -0.025em;
-  font-size: 2.5rem;
-  margin-bottom: 1.5rem;
-  background: linear-gradient(135deg, var(--primary), #a855f7);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Form Elements */
-input {
-  padding: 0.75rem 1rem;
-  border-radius: 12px;
-  border: 1px solid #cbd5e1;
-  background: white;
-  font-size: 1rem;
-  transition: var(--transition);
-  width: 100%;
-  margin-bottom: 1rem;
-}
-
-input:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-}
-
-label {
-  display: block;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
-  color: var(--primary);
-}
-
-button {
-  background-color: var(--primary);
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 12px;
-  border: none;
-  font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-button:hover {
-  background-color: var(--primary-hover);
-  transform: translateY(-2px);
-}
-
-button:active {
-  transform: translateY(0);
-}
-
-/* Navigation */
-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap; /* Added to prevent overflow */
-  gap: 1rem;
-  padding: 1rem 1.5rem;
-  margin-bottom: 2rem;
-  background: var(--card-light);
-  backdrop-filter: blur(10px);
-  border-radius: 24px;
-  position: sticky;
-  top: 1rem;
-  z-index: 100;
-  border: 1px solid var(--glass-border);
-}
-
-.nav-links {
-  display: flex;
-  gap: 1.5rem;
-  align-items: center;
-}
-
-nav a {
-  text-decoration: none;
-  font-weight: 600;
-  color: var(--primary); /* Improved contrast */
-  opacity: 0.9;
-  transition: var(--transition);
-}
-
-.dark nav a {
-  color: #c7d2fe; /* Brighter indigo for better contrast in dark mode */
-}
-
-nav a:hover {
-  opacity: 1;
-  color: var(--primary) !important;
-  transform: translateY(-1px);
-}
-
-/* List Styles */
-.task-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
-  padding: 0;
-  margin-top: 1rem;
-}
-
-li, .glass-card {
-  background: var(--card-light);
-  color: var(--text-light);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-.dark li, .dark .glass-card {
-  background: rgba(30, 41, 59, 0.82); /* Deeper dark for higher contrast */
-  color: var(--text-dark);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* API Task Card Adjustments */
-.dark .api-task-item {
-  background: rgba(15, 23, 42, 0.6) !important;
-  border-color: rgba(99, 102, 241, 0.3) !important;
-}
-
-/* Mobile-Friendly Adjustments */
-@media (max-width: 640px) {
-  .app-container {
-    padding: 0.75rem;
+    @apply bg-white/40 backdrop-blur-md border border-white/20 rounded-2xl shadow-xl transition-all duration-300;
   }
 
-  h1 {
-    font-size: 1.75rem;
-    text-align: center;
+  /* Note: .dark context in Tailwind 4 can be handled via @media (prefers-color-scheme: dark) or manual class */
+  .dark .glass-card {
+    @apply bg-slate-900/40 border-slate-800/20;
+  }
+
+  .nav-link {
+    @apply text-slate-600 font-medium hover:text-indigo-600 transition-all;
   }
   
-  nav {
-    justify-content: center;
-    border-radius: 16px;
-    padding: 1rem;
+  .dark .nav-link {
+    @apply text-slate-400 dark:hover:text-indigo-400;
   }
 
-  .nav-links {
-    width: 100%;
-    justify-content: center;
-    order: 2;
+  .input-base {
+    @apply w-full px-4 py-3 rounded-xl border border-slate-200 bg-white/50 focus:ring-2 focus:ring-indigo-500 outline-none transition-all;
   }
 
-  .nav-auth-theme {
-    width: 100%;
-    justify-content: space-between;
-    order: 1;
-    margin-bottom: 0.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--glass-border);
+  .dark .input-base {
+    @apply border-slate-800 bg-slate-900/50;
   }
-  
-  /* Stack form elements */
-  .responsive-form {
-    grid-template-columns: 1fr !important;
+
+  .button-primary {
+    @apply px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:-translate-y-0.5 transition-all active:translate-y-0;
   }
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
 }

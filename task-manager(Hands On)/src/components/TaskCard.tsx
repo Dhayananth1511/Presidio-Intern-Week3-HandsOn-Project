@@ -1,75 +1,68 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
 import type { Task } from '../store/taskStore';
+import { Link } from 'react-router-dom';
 
 interface TaskCardProps {
   task: Task;
+  onToggle: (id: string) => void;
   onDelete: (id: string) => void;
 }
 
-const TaskCard = React.memo(({ task, onDelete }: TaskCardProps) => {
+export const TaskCard = ({ task, onToggle, onDelete }: TaskCardProps) => {
+  const isDone = task.status === 'Done';
+
   return (
-    <li className="glass-card" style={{ marginBottom: '0.5rem', borderRadius: '12px' }}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', flex: 1 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <span style={{ fontWeight: 700, fontSize: '1rem' }}>{task.title}</span>
-          <span style={{ 
-            fontSize: '0.65rem', 
-            fontWeight: 800,
-            padding: '2px 6px',
-            borderRadius: '4px',
-            letterSpacing: '0.05em',
-            textTransform: 'uppercase',
-            backgroundColor: task.priority === 'High' ? '#fee2e2' : task.priority === 'Medium' ? '#fef3c7' : '#f0fdf4',
-            color: task.priority === 'High' ? '#991b1b' : task.priority === 'Medium' ? '#92400e' : '#166534',
-          }}>
+    <div className={`p-5 glass-card flex flex-col justify-between h-full group hover:ring-2 hover:ring-indigo-500/50 transition-all ${isDone ? 'opacity-60' : ''}`}>
+      <div>
+        <div className="flex justify-between items-start mb-3">
+          <span className={`px-2.5 py-1 text-[10px] font-black uppercase rounded-full tracking-widest ${
+            task.priority === 'High' ? 'bg-red-100 text-red-600' : 
+            task.priority === 'Medium' ? 'bg-amber-100 text-amber-600' : 
+            'bg-green-100 text-green-600'
+          }`}>
             {task.priority}
+          </span>
+          <span className={`text-[10px] font-bold ${isDone ? 'text-green-600' : 'text-slate-400'}`}>
+            {task.status}
           </span>
         </div>
         
+        <h3 className={`text-lg font-bold mb-2 transition-all ${isDone ? 'line-through text-slate-500 italic' : ''}`}>
+          {task.title}
+        </h3>
+        
         {task.description && (
-          <p style={{ margin: 0, fontSize: '0.85rem', opacity: 0.7, lineHeight: 1.4 }}>
+          <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2 mb-4">
             {task.description}
           </p>
         )}
-
-        <span style={{ 
-          fontSize: '0.75rem', 
-          fontWeight: 600,
-          backgroundColor: task.status === 'Done' ? '#22c55e' : '#64748b',
-          color: 'white',
-          padding: '2px 8px',
-          borderRadius: '999px',
-          width: 'fit-content',
-          marginTop: '0.25rem'
-        }}>
-          {task.status}
-        </span>
       </div>
 
-      <div style={{ display: 'flex', gap: '0.5rem' }}>
-        <Link to={`/tasks/${task.id}`}>
-          <button style={{ 
-            backgroundColor: 'transparent', 
-            border: '1px solid var(--primary)', 
-            color: 'var(--primary)',
-            padding: '0.4rem 1rem'
-          }}>
-            View
-          </button>
-        </Link>
-        <button 
-          onClick={() => onDelete(task.id)} 
-          style={{ 
-            backgroundColor: '#ef4444', 
-            padding: '0.4rem 1rem' 
-          }}
+      <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-200/50 dark:border-slate-800/50">
+        <Link 
+          to={`/tasks/${task.id}`} 
+          className="text-xs font-bold text-indigo-600 hover:underline flex items-center gap-1"
         >
-          Delete
-        </button>
+          View Details ↗
+        </Link>
+        <div className="flex gap-2">
+          <button 
+            onClick={() => onToggle(task.id)}
+            className={`p-2 rounded-lg transition-colors ${
+              isDone ? 'bg-amber-100 text-amber-600 hover:bg-amber-200' : 'bg-green-100 text-green-600 hover:bg-green-200'
+            }`}
+            title={isDone ? "Mark as To Do" : "Mark as Done"}
+          >
+            {isDone ? '↻' : '✓'}
+          </button>
+          <button 
+            onClick={() => onDelete(task.id)}
+            className="p-2 bg-red-50 text-red-500 hover:bg-red-500 hover:text-white rounded-lg transition-all"
+            title="Delete Task"
+          >
+            🗑
+          </button>
+        </div>
       </div>
-    </li>
+    </div>
   );
-});
-
-export default TaskCard;
+};

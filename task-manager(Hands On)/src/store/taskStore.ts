@@ -11,7 +11,7 @@ export interface Task {
 
 interface TaskStore {
   tasks: Task[];
-  addTask: (title: string, description?: string, priority?: 'Low' | 'Medium' | 'High') => void;
+  addTask: (data: Omit<Task, 'id'>) => void;
   deleteTask: (id: string) => void;
   toggleTaskStatus: (id: string) => void;
 }
@@ -22,13 +22,10 @@ export const useTaskStore = create<TaskStore>()(
   persist(
     (set) => ({
       tasks: [],
-      addTask: (title, description, priority = 'Medium') => set((state) => ({ 
+      addTask: (data) => set((state) => ({ 
         tasks: [...state.tasks, { 
-          id: Date.now().toString(), 
-          title, 
-          description, 
-          priority, 
-          status: 'To Do' 
+          ...data,
+          id: Date.now().toString() 
         }] 
       })),
       deleteTask: (id) => set((state) => ({

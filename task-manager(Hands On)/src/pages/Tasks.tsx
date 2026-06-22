@@ -1,160 +1,104 @@
-import { useState, useMemo, useCallback } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { useTaskStore } from "../store/taskStore";
-import { fetchTasks } from "../services/api";
-import TaskCard from "../components/TaskCard";
-import { TaskStats } from "../components/TaskStats";
-import { AddTaskForm } from "../components/AddTaskForm";
+import { useTaskStore } from '../store/taskStore';
+import { TaskCard } from '../components/TaskCard';
+import { AddTaskForm } from '../components/AddTaskForm';
+import { TaskStats } from '../components/TaskStats';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 
-function Tasks() {
-  const { tasks, deleteTask } = useTaskStore();
+interface APITask {
+  id: number;
+  title: string;
+  completed: boolean;
+}
+
+const fetchTasks = async (): Promise<APITask[]> => {
+  const { data } = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/todos?_limit=4`);
+  return data;
+};
+
+const Tasks = () => {
+  const { tasks, toggleTaskStatus, deleteTask } = useTaskStore();
   
-  const [search, setSearch] = useState("");
-
-  // Concept: TanStack Query (useQuery)
-  const { 
-    data: apiTasks, 
-    isLoading, 
-    isError, 
-    error,
-    refetch 
-  } = useQuery({
-    queryKey: ['tasks-api'],
+  const { data: apiTasks, isLoading, error } = useQuery({
+    queryKey: ['externalTasks'],
     queryFn: fetchTasks,
   });
 
-  const handleDeleteTask = useCallback((id: string) => {
-    deleteTask(id);
-  }, [deleteTask]);
-
-  const filteredTasks = useMemo(() => {
-    return tasks.filter((t) => 
-      t.title.toLowerCase().includes(search.toLowerCase())
-    );
-  }, [tasks, search]);
-
   return (
-    <div className="glass-card" style={{ padding: '2.5rem' }}>
-      <h1>Dashboard</h1>
+    <div className="max-w-6xl mx-auto px-4 pb-20">
+      <header className="mb-12">
+        <h1 className="text-4xl font-black mb-2 flex items-center gap-3">
+          📊 Dashboard
+        </h1>
+        <p className="text-slate-500 font-medium">Manage your personal goals and external resources.</p>
+      </header>
 
-      {/* Analytics Section */}
-      <section style={{ marginBottom: '3rem' }}>
-        <TaskStats />
-      </section>
-      
-      {/* Local State Tasks Section */}
-      <section aria-labelledby="local-tasks-title">
-        <h2 id="local-tasks-title" style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>Local Tasks (Zustand)</h2>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+        <div className="lg:col-span-2 order-2 lg:order-1">
+          <AddTaskForm />
+        </div>
+        <div className="order-1 lg:order-2">
+          <div className="glass-card p-6 h-full flex flex-col justify-center items-center">
+            <h3 className="text-sm font-black uppercase tracking-widest opacity-40 mb-6">Stats Overview</h3>
+            <TaskStats />
+          </div>
+        </div>
+      </div>
+
+      <section className="mb-16">
+        <div className="flex items-center gap-4 mb-8">
+          <h2 className="text-2xl font-black">Your Tasks</h2>
+          <div className="h-[2px] flex-grow bg-slate-200 dark:bg-slate-800 rounded-full" />
+          <span className="bg-indigo-600 text-white text-xs font-black px-3 py-1 rounded-full">
+            {tasks.length}
+          </span>
+        </div>
         
-        <AddTaskForm />
-
-        <div style={{ marginBottom: '2rem' }}>
-          <label htmlFor="search-input">Search Tasks</label>
-          <input
-            id="search-input"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="🔍 Narrow down your tasks..."
-            aria-label="Search through your local tasks"
-            style={{ 
-              fontSize: '0.9rem', 
-              background: 'rgba(0,0,0,0.03)',
-              borderStyle: 'dashed'
-            }}
-          />
-        </div>
-
-        <div style={{ marginTop: '3rem' }}>
-          <h3 style={{ marginBottom: '1rem', opacity: 0.6, fontSize: '0.8rem', textTransform: 'uppercase' }}>
-            Your Local Tasks ({filteredTasks.length})
-          </h3>
-          <div className="task-grid" role="list">
-            {filteredTasks.length > 0 ? (
-              filteredTasks.map((item) => (
-                <div role="listitem" key={item.id}>
-                  <TaskCard 
-                    task={item} 
-                    onDelete={handleDeleteTask} 
-                  />
-                </div>
-              ))
-            ) : (
-              <p style={{ opacity: 0.5, textAlign: 'center', padding: '2rem', gridColumn: '1 / -1' }}>No local tasks found...</p>
-            )}
+        {tasks.length === 0 ? (
+          <div className="glass-card p-20 text-center border-dashed border-2">
+            <p className="text-slate-400 font-medium italic text-lg">No personal tasks yet. Start by adding one above! 🚀</p>
           </div>
-        </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 animate-fade-in">
+            {tasks.map((task) => (
+              <TaskCard 
+                key={task.id} 
+                task={task} 
+                onToggle={toggleTaskStatus} 
+                onDelete={deleteTask}
+              />
+            ))}
+          </div>
+        )}
       </section>
 
-      <hr style={{ margin: '3rem 0', opacity: 0.1 }} aria-hidden="true" />
-
-      {/* API Consumption Hands-On Section */}
-      <section aria-labelledby="api-tasks-title">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-          <h2 id="api-tasks-title" style={{ fontSize: '1.2rem' }}>API Data (TanStack Query)</h2>
-          <button 
-            onClick={() => refetch()} 
-            style={{ fontSize: '0.8rem', padding: '0.5rem 1rem' }}
-            disabled={isLoading}
-            aria-label="Refetch tasks from external API"
-          >
-            {isLoading ? 'Refetching...' : 'Refresh API Data'}
-          </button>
+      <section>
+        <div className="flex items-center gap-4 mb-8">
+          <h2 className="text-2xl font-black">API Resources (External)</h2>
+          <div className="h-[2px] flex-grow bg-slate-200 dark:bg-slate-800 rounded-full" />
         </div>
 
-        {/* Concept: Handling Loading State */}
-        {isLoading && (
-          <div role="status" aria-busy="true" style={{ textAlign: 'center', padding: '2rem' }}>
-            <div className="spinner"></div>
-            <p>Fetching tasks from JSONPlaceholder...</p>
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[1, 2, 3, 4].map(n => (
+              <div key={n} className="h-32 glass-card animate-pulse" />
+            ))}
           </div>
-        )}
-
-        {/* Concept: Handling Error State */}
-        {isError && (
-          <div role="alert" style={{ 
-            padding: '1.5rem', 
-            background: 'rgba(255,0,0,0.05)', 
-            border: '1px solid rgba(255,0,0,0.1)',
-            borderRadius: '12px',
-            color: '#d32f2f'
-          }}>
-            <strong>Error:</strong> {(error as Error).message}
-            <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>
-              Check if your VITE_API_BASE_URL in .env is correct.
-            </p>
+        ) : error ? (
+          <div className="p-8 bg-red-50 text-red-600 rounded-2xl font-bold border border-red-100">
+            ❌ Couldn't load external resources.
           </div>
-        )}
-
-        {/* Displaying API Data in a responsive grid */}
-        {apiTasks && (
-          <div className="task-grid" role="list" style={{ opacity: isLoading ? 0.5 : 1 }}>
-            {apiTasks.map((task) => (
-              <div key={task.id} role="listitem" className="glass-card api-task-item" style={{ 
-                padding: '1.25rem', 
-                background: 'rgba(255,255,255,0.4)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '1rem',
-                borderWidth: '1px'
-              }}>
-                <span 
-                  aria-hidden="true"
-                  style={{ 
-                    width: '12px', 
-                    height: '12px', 
-                    borderRadius: '50%', 
-                    flexShrink: 0,
-                    background: task.completed ? '#4caf50' : '#ffa726'
-                  }}
-                ></span>
-                <span style={{ 
-                  textDecoration: task.completed ? 'line-through' : 'none', 
-                  opacity: task.completed ? 0.5 : 1,
-                  fontSize: '0.95rem'
-                }}>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {apiTasks?.map((task) => (
+              <div key={task.id} className="p-4 glass-card group hover:translate-y-[-4px] transition-all">
+                <div className="flex items-start justify-between mb-3">
+                  <div className={`p-1.5 rounded-full ${task.completed ? 'bg-green-500' : 'bg-amber-500'}`} />
+                  <span className="text-[10px] font-black opacity-30">API ID: {task.id}</span>
+                </div>
+                <p className="text-xs font-bold leading-tight line-clamp-2">
                   {task.title}
-                  <span className="sr-only"> - status: {task.completed ? 'completed' : 'pending'}</span>
-                </span>
+                </p>
               </div>
             ))}
           </div>
@@ -162,6 +106,6 @@ function Tasks() {
       </section>
     </div>
   );
-}
+};
 
 export default Tasks;
