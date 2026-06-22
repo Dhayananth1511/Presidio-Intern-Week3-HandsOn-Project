@@ -31,10 +31,30 @@ function TaskDetail() {
         </span>
       </div>
 
-      <h1 style={{ marginBottom: '1rem' }}>{task.title}</h1>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+        <h1 style={{ margin: 0 }}>{task.title}</h1>
+        <span style={{ 
+          fontSize: '0.75rem', 
+          fontWeight: 800,
+          padding: '4px 10px',
+          borderRadius: '6px',
+          textTransform: 'uppercase',
+          backgroundColor: task.priority === 'High' ? '#fee2e2' : task.priority === 'Medium' ? '#fef3c7' : '#f0fdf4',
+          color: task.priority === 'High' ? '#991b1b' : task.priority === 'Medium' ? '#92400e' : '#166534',
+        }}>
+          {task.priority} Priority
+        </span>
+      </div>
+
+      {task.description && (
+        <div style={{ marginBottom: '2rem', padding: '1.5rem', background: 'rgba(255,255,255,0.05)', borderRadius: '12px', border: '1px solid var(--glass-border)' }}>
+          <h4 style={{ margin: '0 0 0.5rem 0', opacity: 0.5, fontSize: '0.8rem', textTransform: 'uppercase' }}>Description</h4>
+          <p style={{ margin: 0, lineHeight: 1.6, fontSize: '1.1rem' }}>{task.description}</p>
+        </div>
+      )}
       
-      <p style={{ opacity: 0.7, marginBottom: '2rem' }}>
-        ID: <code style={{ background: 'rgba(0,0,0,0.1)', padding: '2px 6px', borderRadius: '4px' }}>{task.id}</code>
+      <p style={{ opacity: 0.5, marginBottom: '2rem', fontSize: '0.8rem' }}>
+        Reference ID: <code style={{ background: 'rgba(0,0,0,0.1)', padding: '2px 6px', borderRadius: '4px' }}>{task.id}</code>
       </p>
 
       <div className="glass-card" style={{ background: 'rgba(99, 102, 241, 0.05)', borderStyle: 'dotted' }}>

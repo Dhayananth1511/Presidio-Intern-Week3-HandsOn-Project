@@ -1,29 +1,48 @@
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
 
 export interface Task {
   id: string;
   title: string;
+  description?: string;
+  priority: 'Low' | 'Medium' | 'High';
   status: 'To Do' | 'Done';
 }
 
 interface TaskStore {
   tasks: Task[];
-  addTask: (title: string) => void;
+  addTask: (title: string, description?: string, priority?: 'Low' | 'Medium' | 'High') => void;
   deleteTask: (id: string) => void;
   toggleTaskStatus: (id: string) => void;
 }
 
-export const useTaskStore = create<TaskStore>((set) => ({
-  tasks: [],
-  addTask: (title) => set((state) => ({ 
-    tasks: [...state.tasks, { id: Date.now().toString(), title, status: 'To Do' }] 
-  })),
-  deleteTask: (id) => set((state) => ({
-    tasks: state.tasks.filter((t) => t.id !== id)
-  })),
-  toggleTaskStatus: (id) => set((state) => ({
-    tasks: state.tasks.map((t) => 
-      t.id === id ? { ...t, status: t.status === 'To Do' ? 'Done' : 'To Do' } : t
-    )
-  })),
-}));
+// Concept: Zustand Persistence
+// This middleware automatically syncs the 'tasks' state with localStorage.
+export const useTaskStore = create<TaskStore>()(
+  persist(
+    (set) => ({
+      tasks: [],
+      addTask: (title, description, priority = 'Medium') => set((state) => ({ 
+        tasks: [...state.tasks, { 
+          id: Date.now().toString(), 
+          title, 
+          description, 
+          priority, 
+          status: 'To Do' 
+        }] 
+      })),
+      deleteTask: (id) => set((state) => ({
+        tasks: state.tasks.filter((t) => t.id !== id)
+      })),
+      toggleTaskStatus: (id) => set((state) => ({
+        tasks: state.tasks.map((t) => 
+          t.id === id ? { ...t, status: t.status === 'To Do' ? 'Done' : 'To Do' } : t
+        )
+      })),
+    }),
+    {
+      name: 'task-storage', // unique name for the item in localStorage
+      storage: createJSONStorage(() => localStorage),
+    }
+  )
+);

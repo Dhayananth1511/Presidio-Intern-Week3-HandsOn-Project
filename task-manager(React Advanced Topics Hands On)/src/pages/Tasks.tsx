@@ -3,16 +3,15 @@ import { useQuery } from "@tanstack/react-query";
 import { useTaskStore } from "../store/taskStore";
 import { fetchTasks } from "../services/api";
 import TaskCard from "../components/TaskCard";
+import { TaskStats } from "../components/TaskStats";
+import { AddTaskForm } from "../components/AddTaskForm";
 
 function Tasks() {
-  const { tasks, addTask, deleteTask } = useTaskStore();
+  const { tasks, deleteTask } = useTaskStore();
   
-  const [taskInput, setTaskInput] = useState("");
   const [search, setSearch] = useState("");
 
   // Concept: TanStack Query (useQuery)
-  // This hook handles the complete lifecycle: loading, error, and data.
-  // 'tasks-api' is the unique query key for caching.
   const { 
     data: apiTasks, 
     isLoading, 
@@ -23,13 +22,6 @@ function Tasks() {
     queryKey: ['tasks-api'],
     queryFn: fetchTasks,
   });
-
-  const handleAddTask = () => {
-    if (taskInput.trim()) {
-      addTask(taskInput);
-      setTaskInput("");
-    }
-  };
 
   const handleDeleteTask = useCallback((id: string) => {
     deleteTask(id);
@@ -44,25 +36,17 @@ function Tasks() {
   return (
     <div className="glass-card" style={{ padding: '2.5rem' }}>
       <h1>Dashboard</h1>
+
+      {/* Analytics Section */}
+      <section style={{ marginBottom: '3rem' }}>
+        <TaskStats />
+      </section>
       
       {/* Local State Tasks Section */}
       <section aria-labelledby="local-tasks-title">
         <h2 id="local-tasks-title" style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>Local Tasks (Zustand)</h2>
         
-        <div style={{ marginBottom: '2rem' }}>
-          <label htmlFor="task-input">New Task Name</label>
-          <div className="responsive-form" style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '1rem' }}>
-            <input
-              id="task-input"
-              value={taskInput}
-              onChange={(e) => setTaskInput(e.target.value)}
-              placeholder="e.g. Complete Week 3 project"
-              onKeyDown={(e) => e.key === 'Enter' && handleAddTask()}
-              style={{ marginBottom: 0 }}
-            />
-            <button onClick={handleAddTask} aria-label="Add new task to local list">Add Task</button>
-          </div>
-        </div>
+        <AddTaskForm />
 
         <div style={{ marginBottom: '2rem' }}>
           <label htmlFor="search-input">Search Tasks</label>

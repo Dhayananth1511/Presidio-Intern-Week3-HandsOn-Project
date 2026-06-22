@@ -8,6 +8,9 @@ A modern, high-performance task management application built as a comprehensive 
 - **Routing**: React Router 7 (Single Page Navigation)
 - **State Management**: Zustand (Primary), Redux Toolkit (Secondary)
 - **Data Fetching**: TanStack Query v5 (Server State & Caching)
+- **Forms & Validation**: React Hook Form + Zod
+- **Analytics**: Chart.js (Data Visualization)
+- **Persistence**: Zustand Persist (localStorage Sync)
 - **UI Architecture**: Glassmorphism + CSS Variable Design System
 
 ---
@@ -129,6 +132,32 @@ A modern, high-performance task management application built as a comprehensive 
 **Step 25: React Query DevTools**
 - *Goal*: Inspect network cache and stale data.
 - *Why*: Powerful tool for debugging complex data flows and cache invalidation.
+
+---
+
+### Phase 7: Advanced Forms & Validation
+**Step 26: React Hook Form**
+- *Goal*: Eliminate manual state management for every input.
+- *Why*: Improves performance by reducing re-renders and simplifies code structure.
+
+**Step 27: Zod Schema Validation**
+- *Goal*: Define data rules in a single, reusable schema.
+- *Why*: Ensures data integrity and provides instant, type-safe error feedback to the user.
+
+**Step 28: Complex Field Handling**
+- *Goal*: Implement multi-field forms (Priority, Description) with validation.
+- *Why*: Demonstrates real-world form complexity beyond simple text inputs.
+
+---
+
+### Phase 8: Data Analytics & Persistence
+**Step 29: Data Visualization (Chart.js)**
+- *Goal*: Render a Pie Chart of task statistics.
+- *Why*: Provides at-a-glance context on productivity that raw numbers cannot convey.
+
+**Step 30: Zustand Persistence**
+- *Goal*: Sync the application state with `localStorage`.
+- *Why*: Prevents data loss on page refresh, making the app feel like a real production tool.
 
 
 ## Getting Started
