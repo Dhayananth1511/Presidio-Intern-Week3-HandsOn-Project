@@ -213,6 +213,31 @@ sequenceDiagram
     React-->>User: Renders Tasks & Protected Content
 ```
 
+## 🏗️ Application Execution Flow
+
+This chart traces exactly what happens when you run `npm run dev` and how the application data flows from the server to your screen.
+
+```mermaid
+graph TD
+    A[🚀 USER: npm run dev] --> B{Entry Point}
+    B -->|index.html| C[⚛️ main.tsx / React Init]
+    C --> D[🛠️ Context Providers: Auth, Theme, Query]
+    D --> E[🛤️ AppRoutes.tsx]
+    
+    E --> F{Route Type?}
+    F -->|Public: /| G[🏠 Home.tsx]
+    F -->|Public: /login| H[🔑 Login.tsx]
+    
+    F -->|Protected: /tasks| I[🛡️ ProtectedRoute.tsx]
+    I --> J{Cookie Valid?}
+    J -->|No| H
+    J -->|Yes| K[📊 Tasks.tsx Dashboard]
+    
+    K --> L[📡 TanStack Query: fetchTasks]
+    L --> M[🌐 axios: jsonplaceholder API]
+    M --> N[✨ UI Render: Task Cards & Stats]
+```
+
 
 ## Getting Started
 ```bash
