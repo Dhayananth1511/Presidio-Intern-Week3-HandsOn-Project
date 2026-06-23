@@ -1,4 +1,4 @@
-import type { Task } from '../types/task';
+import type { Task } from '@/types/task';
 
 // Concept: Environment Variables
 // Vite uses import.meta.env to access variables prefixed with VITE_

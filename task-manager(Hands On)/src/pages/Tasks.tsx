@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
-import { useTaskStore } from '../store/taskStore';
+import { useTaskStore } from '@/store/taskStore';
 import axios from 'axios';
 
 const fetchTasksAPI = async (): Promise<APITask[]> => {
   const { data } = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/todos?_limit=4`);
   return data;
 };
-import { TaskCard } from '../components/TaskCard';
-import { AddTaskForm } from '../components/AddTaskForm';
-import { TaskStats } from '../components/TaskStats';
+import { TaskCard } from '@/components/TaskCard';
+import { AddTaskForm } from '@/components/AddTaskForm';
+import { TaskStats } from '@/components/TaskStats';
 import { useQuery } from '@tanstack/react-query';
 
 interface APITask {

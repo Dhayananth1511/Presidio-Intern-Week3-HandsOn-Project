@@ -1,7 +1,7 @@
 module.exports = {
-  PORT: 5000,
-  SECRET_KEY: 'presidio_secret_key_123',
-  COOKIE_NAME: 'auth_token',
-  JWT_EXPIRES_IN: '1h',
-  COOKIE_MAX_AGE: 3600000 // 1 hour in ms
+  PORT: process.env.PORT ,
+  SECRET_KEY: process.env.JWT_SECRET,
+  COOKIE_NAME: process.env.COOKIE_NAME,
+  JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN,
+  COOKIE_MAX_AGE: parseInt(process.env.COOKIE_MAX_AGE) 
 };

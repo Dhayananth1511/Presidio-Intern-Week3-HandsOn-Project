@@ -1,12 +1,12 @@
 import { Routes, Route } from "react-router-dom";
 
-import Home from "../pages/Home";
-import Tasks from "../pages/Tasks";
-import TaskDetail from "../pages/TaskDetail";
-import Settings from "../pages/Settings";
-import Login from "../pages/Login";
-import Signup from "../pages/Signup";
-import ProtectedRoute from "../components/ProtectedRoute";
+import Home from "@/pages/Home";
+import Tasks from "@/pages/Tasks";
+import TaskDetail from "@/pages/TaskDetail";
+import Settings from "@/pages/Settings";
+import Login from "@/pages/Login";
+import Signup from "@/pages/Signup";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 function AppRoutes() {
   return (

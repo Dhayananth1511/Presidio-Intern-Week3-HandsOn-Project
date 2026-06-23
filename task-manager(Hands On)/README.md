@@ -202,6 +202,17 @@ A modern, high-performance task management application built as a comprehensive 
 - *Goal*: Separate the data storage (Models) from the behavior (Controllers).
 - *Why*: Allows the app to switch from in-memory arrays to MongoDB/PostgreSQL effortlessly.
 
+---
+
+### Phase 12: Developer Experience & Organization
+**Step 39: Path Aliasing (@/)**
+- *Goal*: Replace messy relative imports (e.g., `../../../`) with a clean `@/` prefix.
+- *Why*: Improves code readability and makes refactoring (moving files) painless.
+
+**Step 40: Unified Environment Hub**
+- *Goal*: Consolidate Frontend and Backend configuration into a single root `.env` file.
+- *Why*: Provides a single "Source of Truth" for the entire project, simplifying deployment and local setup.
+
 ## 🔄 The Secure Authentication Workflow
 
 Below is the complete architectural loop of how a user's identity is verified from the login click to the final dashboard render.
@@ -258,13 +269,31 @@ graph TD
 
 
 ## Getting Started
-```bash
-# Install dependencies
-npm install
 
-# Run the dev server
-npm run dev
+1. **Clone and Install**
+   ```bash
+   npm install
+   cd server && npm install
+   ```
 
-# Build for production
-npm run build
-```
+2. **Configure Environment**
+   Create a `.env` file in the **root** (not in the server folder) and add:
+   ```env
+   # Frontend
+   VITE_API_BASE_URL=http://localhost:5000
+
+   # Backend
+   PORT=5000
+   JWT_SECRET=your_super_secret_key
+   ```
+
+3. **Run the Application**
+   Open two terminals:
+   ```bash
+   # Terminal 1: Frontend
+   npm run dev
+
+   # Terminal 2: Backend
+   cd server
+   npm run dev
+   ```

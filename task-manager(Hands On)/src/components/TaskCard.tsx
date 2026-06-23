@@ -1,4 +1,4 @@
-import type { Task } from '../store/taskStore';
+import type { Task } from '@/store/taskStore';
 import { Link } from 'react-router-dom';
 
 interface TaskCardProps {

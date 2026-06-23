@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { useTaskStore } from "../store/taskStore";
+import { useTaskStore } from "@/store/taskStore";
 
 function TaskDetail() {
   const { id } = useParams();
