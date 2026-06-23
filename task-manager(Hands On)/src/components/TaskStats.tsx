@@ -1,12 +1,24 @@
 import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import type { ChartData } from 'chart.js';
-import { useTaskStore } from '@/store/taskStore';
+import { useQuery } from '@tanstack/react-query';
+import type { Task } from '@/store/taskStore';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
+// API Fetcher shared with Tasks.tsx
+const fetchLocalTasks = async (): Promise<Task[]> => {
+  const res = await fetch('/api/tasks');
+  if (!res.ok) throw new Error("Failed to fetch tasks");
+  return res.json();
+};
+
 export const TaskStats = () => {
-  const { tasks } = useTaskStore();
+  // We use the same queryKey ['tasks'] to share the cached data
+  const { data: tasks = [] } = useQuery({
+    queryKey: ['tasks'],
+    queryFn: fetchLocalTasks,
+  });
 
   const completed = tasks.filter(t => t.status === 'Done').length;
   const pending = tasks.length - completed;

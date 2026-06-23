@@ -9,73 +9,30 @@ export interface Task {
 }
 
 interface TaskStore {
-  tasks: Task[];
-  loading: boolean;
-  
-  // Real API Actions
-  fetchTasks: () => Promise<void>;
+  // Real API Actions (Mutations)
+  // We keep the logic here but remove the set() calls for 'tasks' array
   addTask: (data: Omit<Task, 'id' | 'status'>) => Promise<void>;
   deleteTask: (id: string) => Promise<void>;
   toggleTaskStatus: (id: string) => Promise<void>;
 }
 
-export const useTaskStore = create<TaskStore>((set, get) => ({
-  tasks: [],
-  loading: false,
-
-  fetchTasks: async () => {
-    set({ loading: true });
-    try {
-      const res = await fetch('/api/tasks');
-      if (res.ok) {
-        const data = await res.json();
-        set({ tasks: data });
-      }
-    } catch (err) {
-      console.error("Failed to fetch tasks", err);
-    } finally {
-      set({ loading: false });
-    }
-  },
-
+export const useTaskStore = create<TaskStore>(() => ({
   addTask: async (data) => {
-    try {
-      const res = await fetch('/api/tasks', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
-      if (res.ok) {
-        const newTask = await res.json();
-        set((state) => ({ tasks: [...state.tasks, newTask] }));
-      }
-    } catch (err) {
-      console.error("Failed to add task", err);
-    }
+    const res = await fetch('/api/tasks', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error("Failed to add task");
   },
 
   deleteTask: async (id) => {
-    try {
-      const res = await fetch(`/api/tasks/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        set((state) => ({ tasks: state.tasks.filter((t) => t.id !== id) }));
-      }
-    } catch (err) {
-      console.error("Failed to delete task", err);
-    }
+    const res = await fetch(`/api/tasks/${id}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error("Failed to delete task");
   },
 
   toggleTaskStatus: async (id) => {
-    try {
-      const res = await fetch(`/api/tasks/${id}`, { method: 'PATCH' });
-      if (res.ok) {
-        const updatedTask = await res.json();
-        set((state) => ({
-          tasks: state.tasks.map((t) => (t.id === id ? updatedTask : t))
-        }));
-      }
-    } catch (err) {
-      console.error("Failed to toggle task", err);
-    }
+    const res = await fetch(`/api/tasks/${id}`, { method: 'PATCH' });
+    if (!res.ok) throw new Error("Failed to toggle task");
   },
 }));

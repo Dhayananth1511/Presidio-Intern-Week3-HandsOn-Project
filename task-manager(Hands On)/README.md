@@ -17,7 +17,7 @@ A modern, high-performance task management application built as a comprehensive 
 
 ---
 
-## The 35-Step Learning Roadmap
+## The Complete Learning Roadmap
 
 ### Phase 1: Foundations & Architecture
 **Step 1: Clean Project Structure**
@@ -206,12 +206,27 @@ A modern, high-performance task management application built as a comprehensive 
 
 ### Phase 12: Developer Experience & Organization
 **Step 39: Path Aliasing (@/)**
-- *Goal*: Replace messy relative imports (e.g., `../../../`) with a clean `@/` prefix.
-- *Why*: Improves code readability and makes refactoring (moving files) painless.
+- *Goal*: Replace messy relative imports with a clean `@/` prefix.
+- *Why*: Improves code readability and makes refactoring painless.
 
 **Step 40: Unified Environment Hub**
 - *Goal*: Consolidate Frontend and Backend configuration into a single root `.env` file.
-- *Why*: Provides a single "Source of Truth" for the entire project, simplifying deployment and local setup.
+- *Why*: Provides a single "Source of Truth" for the entire project.
+
+---
+
+### Phase 13: Industrial Hardening & Performance
+**Step 41: Robust Backend Validation (Zod)**
+- *Goal*: Secure the server by strictly validating `req.body` using Zod schemas.
+- *Why*: Ensures only clean, expected data reaches your controllers.
+
+**Step 42: Modern Data Fetching Refactor**
+- *Goal*: Replace manual loading/fetch states with TanStack Query.
+- *Why*: Automates caching, background sync, and UI state management.
+
+**Step 43: Strict Type Enforcement**
+- *Goal*: Configure `verbatimModuleSyntax` and explicit `import type` patterns.
+- *Why*: Optimizes build size and ensures separation between values and types.
 
 ## 🔄 The Secure Authentication Workflow
 
@@ -241,7 +256,7 @@ sequenceDiagram
 
 ## 🏗️ Application Execution Flow
 
-This chart traces exactly what happens when you run `npm run dev` and how the application data flows from the server to your screen.
+This chart traces exactly what happens when you run `npm run dev` and how data flows through the system.
 
 ```mermaid
 graph TD
@@ -259,14 +274,11 @@ graph TD
     J -->|No| H
     J -->|Yes| K["Tasks.tsx Dashboard"]
     
-    K --> L["TanStack Query (fetchTasksAPI)"]
-    L --> M["axios (jsonplaceholder API)"]
-    K --> O["useTaskStore (fetchTasks)"]
-    O --> P["Express (/api/tasks)"]
+    K --> L["TanStack Query (useQuery)"]
+    L --> P["Express (/api/tasks)"]
     P --> Q["taskController (Filter by UserEmail)"]
     Q --> N["UI Render (Private Task Dashboard)"]
 ```
-
 
 ## Getting Started
 
@@ -277,12 +289,9 @@ graph TD
    ```
 
 2. **Configure Environment**
-   Create a `.env` file in the **root** (not in the server folder) and add:
+   Create a `.env` file in the **root** folder and add:
    ```env
-   # Frontend
-   VITE_API_BASE_URL=http://localhost:5000
-
-   # Backend
+   # General
    PORT=5000
    JWT_SECRET=your_super_secret_key
    ```

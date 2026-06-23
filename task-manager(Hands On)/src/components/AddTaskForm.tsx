@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTaskStore } from '@/store/taskStore';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const taskSchema = z.object({
   title: z.string()
@@ -16,7 +17,16 @@ const taskSchema = z.object({
 type TaskFormData = z.infer<typeof taskSchema>;
 
 export const AddTaskForm = () => {
+  const queryClient = useQueryClient();
   const { addTask } = useTaskStore();
+
+  const mutation = useMutation({
+    mutationFn: addTask,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      reset();
+    },
+  });
   
   const { 
     register, 
@@ -32,13 +42,11 @@ export const AddTaskForm = () => {
   });
 
   const onSubmit = (data: TaskFormData) => {
-    addTask({
+    mutation.mutate({
       title: data.title,
-      description: data.description,
+      description: data.description || '',
       priority: data.priority,
-      status: 'To Do',
     });
-    reset();
   };
 
   return (
@@ -83,8 +91,12 @@ export const AddTaskForm = () => {
         </div>
 
         <div className="flex justify-end pt-4">
-          <button type="submit" className="button-primary w-full md:w-auto">
-            🚀 Add Task to List
+          <button 
+            type="submit" 
+            disabled={mutation.isPending}
+            className={`button-primary w-full md:w-auto ${mutation.isPending ? 'opacity-50' : ''}`}
+          >
+            {mutation.isPending ? '🚀 Adding...' : '🚀 Add Task to List'}
           </button>
         </div>
       </form>

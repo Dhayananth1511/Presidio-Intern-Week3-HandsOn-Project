@@ -11,10 +11,7 @@ exports.signup = async (req, res) => {
   try {
     const { email, password } = req.body;
     
-    // 1. Basic Validation
-    if (!email || !password) return res.status(400).json({ message: 'Email and password required' });
-    
-    // 2. Check if user already exists
+    // 1. Check if user already exists
     const existingUser = users.find(u => u.email === email);
     if (existingUser) return res.status(400).json({ message: 'User already exists' });
 

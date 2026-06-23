@@ -1,11 +1,34 @@
 import { useParams, Link } from "react-router-dom";
-import { useTaskStore } from "@/store/taskStore";
+import { useTaskStore, type Task } from "@/store/taskStore";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+
+// API Fetcher for single task (shared query logic)
+const fetchLocalTasks = async (): Promise<Task[]> => {
+  const res = await fetch('/api/tasks');
+  if (!res.ok) throw new Error("Failed to fetch tasks");
+  return res.json();
+};
 
 function TaskDetail() {
   const { id } = useParams();
-  const { tasks, toggleTaskStatus } = useTaskStore();
+  const queryClient = useQueryClient();
+  const { toggleTaskStatus } = useTaskStore();
   
+  // 1. Get tasks from React Query
+  const { data: tasks = [], isLoading } = useQuery({
+    queryKey: ['tasks'],
+    queryFn: fetchLocalTasks,
+  });
+
   const task = tasks.find(t => t.id === id);
+
+  // 2. Mutation for status toggle
+  const mutation = useMutation({
+    mutationFn: toggleTaskStatus,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tasks'] }),
+  });
+
+  if (isLoading) return <div className="p-20 text-center animate-pulse text-2xl font-black">Loading Task Details...</div>;
 
   if (!task) {
     return (
@@ -69,14 +92,15 @@ function TaskDetail() {
           <h3 className="text-xl font-bold mb-2">Manage Status</h3>
           <p className="text-slate-500 dark:text-slate-400 mb-6 text-sm">Has this task been completed yet?</p>
           <button 
-            onClick={() => toggleTaskStatus(task.id)}
+            onClick={() => mutation.mutate(task.id)}
+            disabled={mutation.isPending}
             className={`w-full py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition-all shadow-lg ${
               isDone 
               ? 'bg-slate-300 text-slate-700 hover:bg-slate-400 shadow-slate-200/50' 
               : 'bg-green-500 text-white hover:bg-green-600 shadow-green-500/30 active:scale-95'
-            }`}
+            } ${mutation.isPending ? 'opacity-50' : ''}`}
           >
-            {isDone ? 'Mark as Not Completed' : '✨ Mark as Completed'}
+            {mutation.isPending ? 'Syncing...' : isDone ? 'Mark as Not Completed' : '✨ Mark as Completed'}
           </button>
         </div>
       </div>
