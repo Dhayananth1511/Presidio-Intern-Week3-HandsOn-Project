@@ -1,9 +1,15 @@
+import { useEffect } from 'react';
 import { useTaskStore } from '../store/taskStore';
+import axios from 'axios';
+
+const fetchTasksAPI = async (): Promise<APITask[]> => {
+  const { data } = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/todos?_limit=4`);
+  return data;
+};
 import { TaskCard } from '../components/TaskCard';
 import { AddTaskForm } from '../components/AddTaskForm';
 import { TaskStats } from '../components/TaskStats';
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
 
 interface APITask {
   id: number;
@@ -11,17 +17,17 @@ interface APITask {
   completed: boolean;
 }
 
-const fetchTasks = async (): Promise<APITask[]> => {
-  const { data } = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/todos?_limit=4`);
-  return data;
-};
-
 const Tasks = () => {
-  const { tasks, toggleTaskStatus, deleteTask } = useTaskStore();
+  const { tasks, fetchTasks, toggleTaskStatus, deleteTask, loading } = useTaskStore();
   
-  const { data: apiTasks, isLoading, error } = useQuery({
+  // Fetch tasks when the board loads
+  useEffect(() => {
+    fetchTasks();
+  }, [fetchTasks]);
+
+  const { data: apiTasks, isLoading: isApiLoading, error } = useQuery({
     queryKey: ['externalTasks'],
-    queryFn: fetchTasks,
+    queryFn: fetchTasksAPI,
   });
 
   return (
@@ -54,7 +60,11 @@ const Tasks = () => {
           </span>
         </div>
         
-        {tasks.length === 0 ? (
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
+            {[1, 2, 3].map(n => <div key={n} className="h-48 glass-card bg-slate-200/50" />)}
+          </div>
+        ) : tasks.length === 0 ? (
           <div className="glass-card p-20 text-center border-dashed border-2">
             <p className="text-slate-400 font-medium italic text-lg">No personal tasks yet. Start by adding one above! 🚀</p>
           </div>
@@ -78,7 +88,7 @@ const Tasks = () => {
           <div className="h-[2px] flex-grow bg-slate-200 dark:bg-slate-800 rounded-full" />
         </div>
 
-        {isLoading ? (
+        {isApiLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {[1, 2, 3, 4].map(n => (
               <div key={n} className="h-32 glass-card animate-pulse" />

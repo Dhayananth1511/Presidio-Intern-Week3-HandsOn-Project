@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -25,10 +25,10 @@ const Login = () => {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      await login(data.email);
+      await login(data.email, data.password);
       navigate('/tasks');
-    } catch (err) {
-      alert("Login failed! Make sure the backend server is running.");
+    } catch (err: any) {
+      alert(err.message || "Login failed!");
     }
   };
 
@@ -67,6 +67,11 @@ const Login = () => {
             Sign In Now
           </button>
         </form>
+
+        <div className="mt-6 text-center text-sm font-medium">
+          <span className="opacity-50">Don't have an account? </span>
+          <Link to="/signup" className="text-indigo-600 hover:underline font-bold">Create one here</Link>
+        </div>
 
         <div className="mt-8 p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl border border-indigo-200/50 dark:border-indigo-800/50">
           <p className="text-xs font-bold text-indigo-600 dark:text-indigo-400 mb-1 flex items-center gap-2">

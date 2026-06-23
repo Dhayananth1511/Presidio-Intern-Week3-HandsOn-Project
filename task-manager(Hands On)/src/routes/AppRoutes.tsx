@@ -5,6 +5,7 @@ import Tasks from "../pages/Tasks";
 import TaskDetail from "../pages/TaskDetail";
 import Settings from "../pages/Settings";
 import Login from "../pages/Login";
+import Signup from "../pages/Signup";
 import ProtectedRoute from "../components/ProtectedRoute";
 
 function AppRoutes() {
@@ -12,6 +13,7 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
       
       {/* Protected Routes */}
       <Route path="/tasks" element={

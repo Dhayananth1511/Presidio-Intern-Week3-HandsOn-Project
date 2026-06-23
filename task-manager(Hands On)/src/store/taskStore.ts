@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
 
 export interface Task {
   id: string;
@@ -11,35 +10,72 @@ export interface Task {
 
 interface TaskStore {
   tasks: Task[];
-  addTask: (data: Omit<Task, 'id'>) => void;
-  deleteTask: (id: string) => void;
-  toggleTaskStatus: (id: string) => void;
+  loading: boolean;
+  
+  // Real API Actions
+  fetchTasks: () => Promise<void>;
+  addTask: (data: Omit<Task, 'id' | 'status'>) => Promise<void>;
+  deleteTask: (id: string) => Promise<void>;
+  toggleTaskStatus: (id: string) => Promise<void>;
 }
 
-// Concept: Zustand Persistence
-// This middleware automatically syncs the 'tasks' state with localStorage.
-export const useTaskStore = create<TaskStore>()(
-  persist(
-    (set) => ({
-      tasks: [],
-      addTask: (data) => set((state) => ({ 
-        tasks: [...state.tasks, { 
-          ...data,
-          id: Date.now().toString() 
-        }] 
-      })),
-      deleteTask: (id) => set((state) => ({
-        tasks: state.tasks.filter((t) => t.id !== id)
-      })),
-      toggleTaskStatus: (id) => set((state) => ({
-        tasks: state.tasks.map((t) => 
-          t.id === id ? { ...t, status: t.status === 'To Do' ? 'Done' : 'To Do' } : t
-        )
-      })),
-    }),
-    {
-      name: 'task-storage', // unique name for the item in localStorage
-      storage: createJSONStorage(() => localStorage),
+export const useTaskStore = create<TaskStore>((set, get) => ({
+  tasks: [],
+  loading: false,
+
+  fetchTasks: async () => {
+    set({ loading: true });
+    try {
+      const res = await fetch('/api/tasks');
+      if (res.ok) {
+        const data = await res.json();
+        set({ tasks: data });
+      }
+    } catch (err) {
+      console.error("Failed to fetch tasks", err);
+    } finally {
+      set({ loading: false });
     }
-  )
-);
+  },
+
+  addTask: async (data) => {
+    try {
+      const res = await fetch('/api/tasks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (res.ok) {
+        const newTask = await res.json();
+        set((state) => ({ tasks: [...state.tasks, newTask] }));
+      }
+    } catch (err) {
+      console.error("Failed to add task", err);
+    }
+  },
+
+  deleteTask: async (id) => {
+    try {
+      const res = await fetch(`/api/tasks/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        set((state) => ({ tasks: state.tasks.filter((t) => t.id !== id) }));
+      }
+    } catch (err) {
+      console.error("Failed to delete task", err);
+    }
+  },
+
+  toggleTaskStatus: async (id) => {
+    try {
+      const res = await fetch(`/api/tasks/${id}`, { method: 'PATCH' });
+      if (res.ok) {
+        const updatedTask = await res.json();
+        set((state) => ({
+          tasks: state.tasks.map((t) => (t.id === id ? updatedTask : t))
+        }));
+      }
+    } catch (err) {
+      console.error("Failed to toggle task", err);
+    }
+  },
+}));

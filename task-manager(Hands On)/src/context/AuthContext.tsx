@@ -3,7 +3,8 @@ import { createContext, useContext, useState, useEffect, type ReactNode } from "
 interface AuthContextType {
   user: string | null;
   loading: boolean;
-  login: (email: string) => Promise<void>;
+  login: (email: string, password?: string) => Promise<void>;
+  signup: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -13,9 +14,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // --- Step 4.1: Initial Verify ---
-  // When the app starts, we ask the server: "Do you know who I am?"
-  // The server looks at the browser's cookies to decide.
+  // --- Initial Verify ---
   useEffect(() => {
     const checkUser = async () => {
       try {
@@ -33,20 +32,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     checkUser();
   }, []);
 
-  // --- Step 4.2: Real Login ---
-  const login = async (email: string) => {
+  // --- Real Signup ---
+  const signup = async (email: string, password: string) => {
+    const res = await fetch('/api/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.message || "Signup failed");
+    }
+  };
+
+  // --- Real Login ---
+  const login = async (email: string, password?: string) => {
     try {
       const res = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
+        body: JSON.stringify({ email, password })
       });
       
       if (res.ok) {
         const data = await res.json();
         setUser(data.user);
       } else {
-        throw new Error("Invalid credentials");
+        const error = await res.json();
+        throw new Error(error.message || "Invalid credentials");
       }
     } catch (err) {
       console.error("Login failed", err);
@@ -65,7 +78,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, signup, logout }}>
       {!loading && children}
     </AuthContext.Provider>
   );
