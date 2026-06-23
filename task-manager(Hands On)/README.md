@@ -230,31 +230,18 @@ sequenceDiagram
 
 ## 🏗️ Application Execution Flow
 
-This chart traces exactly what happens when you run `npm run dev` and how the application data flows from the server to your screen.
+To maintain high performance and scalability, the application follows a strict modular flow from initialization to data fetching.
 
-```mermaid
-graph TD
-    A["🚀 USER: npm run dev"] --> B{"Entry Point"}
-    B -->|index.html| C["React Init (main.tsx)"]
-    C --> D["Context Providers (Auth, Theme, Query)"]
-    D --> E["AppRoutes.tsx"]
-    
-    E --> F{"Route Type?"}
-    F -->|Public: /| G["Home.tsx"]
-    F -->|Public: /login| H["Login.tsx"]
-    
-    F -->|Protected: /tasks| I["ProtectedRoute.tsx"]
-    I --> J{"Cookie Valid?"}
-    J -->|No| H
-    J -->|Yes| K["Tasks.tsx Dashboard"]
-    
-    K --> L["TanStack Query (fetchTasksAPI)"]
-    L --> M["axios (jsonplaceholder API)"]
-    K --> O["useTaskStore (fetchTasks)"]
-    O --> P["Express (/api/tasks)"]
-    P --> Q["taskController (Filter by UserEmail)"]
-    Q --> N["UI Render (Private Task Dashboard)"]
-```
+### Quick Overview
+1. **Startup**: `npm run dev` initializes both the Vite frontend and Express backend.
+2. **Initialization**: React mounts via `main.tsx`, wrapping the app in essential Context Providers.
+3. **Routing**: `AppRoutes.tsx` manages view transitions and protects private data.
+4. **Data Loop**: Frontend components request data via TanStack Query -> Axios -> Express API.
+
+> [!TIP]
+> For a **comprehensive technical breakdown**, including detailed Mermaid diagrams of the security architecture and request lifecycle, please refer to the **[Full Application Flow Document](FLOW.md)**.
+
+---
 
 
 ## Getting Started
