@@ -187,6 +187,21 @@ A modern, high-performance task management application built as a comprehensive 
 - *Goal*: Separate the App logic (`app.js`) from the network startup (`server.js`).
 - *Why*: Critical for enterprise testing and high-availability deployments.
 
+---
+
+### Phase 11: Real-World Data Privacy & Hashing
+**Step 36: Bcrypt Password Encryption**
+- *Goal*: Never store raw passwords. Use salt-based hashing.
+- *Why*: Even if the server is hacked, user passwords remain unreadable and safe.
+
+**Step 37: Multi-User Task Isolation**
+- *Goal*: Ensure User A can never see or modify User B's tasks.
+- *Why*: Privacy is a non-negotiable requirement for any professional production app.
+
+**Step 38: Model Abstraction Pattern**
+- *Goal*: Separate the data storage (Models) from the behavior (Controllers).
+- *Why*: Allows the app to switch from in-memory arrays to MongoDB/PostgreSQL effortlessly.
+
 ## 🔄 The Secure Authentication Workflow
 
 Below is the complete architectural loop of how a user's identity is verified from the login click to the final dashboard render.
@@ -233,9 +248,12 @@ graph TD
     J -->|No| H
     J -->|Yes| K[📊 Tasks.tsx Dashboard]
     
-    K --> L[📡 TanStack Query: fetchTasks]
+    K --> L[📡 TanStack Query: fetchTasksAPI]
     L --> M[🌐 axios: jsonplaceholder API]
-    M --> N[✨ UI Render: Task Cards & Stats]
+    K --> O[🗄️ useTaskStore: fetchTasks]
+    O --> P[🚀 Express: /api/tasks]
+    P --> Q[🛡️ taskController: Filter by UserEmail]
+    Q --> N[✨ UI Render: Private Task Dashboard]
 ```
 
 
