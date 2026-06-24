@@ -227,6 +227,18 @@ A modern, high-performance task management application built as a comprehensive 
 **Step 43: Strict Type Enforcement**
 - *Goal*: Configure `verbatimModuleSyntax` and explicit `import type` patterns.
 - *Why*: Optimizes build size and ensures separation between values and types.
+---
+
+### Phase 14: Cloud Deployment & Full-Stack Automation
+**Step 44: TypeScript 6.0 Compatibility**
+- *Goal*: Resolve modern `baseUrl` deprecations and build-time safety.
+- *Why*: Ensures the codebase can be built by strict CI/CD pipelines (like Vercel).
+
+**Step 45: Full-Stack Vercel Bridge**
+- *Goal*: Create an `api/` entry point and `vercel.json` rewrites.
+- *Why*: Allows a standard Express server to run alongside a React frontend on a single serverless domain.
+
+---
 
 ## 🔄 The Secure Authentication Workflow
 
@@ -280,6 +292,26 @@ graph TD
     Q --> N["UI Render (Private Task Dashboard)"]
 ```
 
+## 🌍 Production Deployment (Vercel)
+
+This project is optimized for "Full-Stack" deployment on Vercel using Serverless Functions.
+
+### 1. The Bridge Architecture
+We use a **Bridge Pattern** where `api/index.js` imports your Express `app.js`. This allows you to keep your modular backend structure while letting Vercel handle the scaling.
+
+### 2. Deployment Steps
+1. **Install CLI**: `npm install -g vercel`
+2. **Login**: `vercel login`
+3. **Deploy**: `vercel --prod`
+
+### 3. Required Environment Variables
+You MUST add the following keys in the **Vercel Dashboard (Settings > Environment Variables)** for the backend to function:
+- `JWT_SECRET`: Your private key.
+- `COOKIE_NAME`: `auth_token`
+- `JWT_EXPIRES_IN`: `1h`
+- `COOKIE_MAX_AGE`: `3600000`
+
+
 ## Getting Started
 
 1. **Clone and Install**
@@ -289,20 +321,27 @@ graph TD
    ```
 
 2. **Configure Environment**
-   Create a `.env` file in the **root** folder and add:
+   Create a `.env` file in the **root** folder:
    ```env
-   # General
+   # Backend
    PORT=5000
-   JWT_SECRET=your_super_secret_key
+   JWT_SECRET=your_secret_key
+   COOKIE_NAME=auth_token
+   JWT_EXPIRES_IN=1h
+   COOKIE_MAX_AGE=3600000
    ```
 
-3. **Run the Application**
+3. **Run for Development**
    Open two terminals:
    ```bash
    # Terminal 1: Frontend
    npm run dev
 
    # Terminal 2: Backend
-   cd server
-   npm run dev
+   npm run dev --prefix server
+   ```
+
+4. **Deploy to Production**
+   ```bash
+   vercel --prod
    ```
