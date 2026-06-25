@@ -17,6 +17,22 @@ A modern, high-performance task management application built as a comprehensive 
 
 ---
 
+## 📚 Study Handbook & Concept Deep-Dive
+
+This project is accompanied by a **Complete Concept Handbook**: [Material.md](./Material.md).
+
+If you are following this project as a learning journey, the handbook provides the "Why" and "How" behind every architectural decision, including internal logic, code examples, project usage, and common interview questions for:
+- **React Advanced**: Hooks (Deep-dive), Refs, Context, and Error Boundaries.
+- **Optimization**: React.memo, useMemo, and useCallback.
+- **State Management**: Context API vs. Redux Toolkit vs. Zustand.
+- **Data Handling**: Async/Await, TanStack Query, and Error Handling.
+- **Security**: Environment Variables, JWT Authentication, and Password Hashing.
+- **Validation**: Strict Schema Validation with Zod (Frontend & Backend).
+- **Deployment**: Full-stack Vercel Bridge and Cloud Architecture.
+- **UX**: Responsive Design and Accessibility.
+
+---
+
 ## The Complete Learning Roadmap
 
 ### Phase 1: Foundations & Architecture
