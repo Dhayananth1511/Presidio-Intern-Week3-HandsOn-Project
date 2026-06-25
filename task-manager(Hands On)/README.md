@@ -1,5 +1,7 @@
 # Pro Task Manager (React + TypeScript + Vite)
 
+🚀 **Live Demo:** [my-task-manager.vercel.app](https://my-task-manager-1cgpe34a3-dhayananth1511-5577s-projects.vercel.app)
+
 A modern, high-performance task management application built as a comprehensive learning journey from basic React to production-grade patterns.
 
 ## Performance-Oriented Tech Stack
