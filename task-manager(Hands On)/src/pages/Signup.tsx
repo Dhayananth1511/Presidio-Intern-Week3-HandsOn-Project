@@ -32,8 +32,9 @@ const Signup = () => {
       await signup(data.email, data.password);
       alert("Account created successfully! You can now login.");
       navigate('/login');
-    } catch (err: any) {
-      alert(err.message || "Signup failed!");
+    } catch (err: unknown) {
+      const error = err as Error;
+      alert(error.message || "Signup failed!");
     }
   };
 

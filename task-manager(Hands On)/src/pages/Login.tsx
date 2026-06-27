@@ -27,8 +27,9 @@ const Login = () => {
     try {
       await login(data.email, data.password);
       navigate('/tasks');
-    } catch (err: any) {
-      alert(err.message || "Login failed!");
+    } catch (err: unknown) {
+      const error = err as Error;
+      alert(error.message || "Login failed!");
     }
   };
 

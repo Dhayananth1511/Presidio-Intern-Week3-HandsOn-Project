@@ -51,12 +51,12 @@ export const TaskStats = () => {
         labels: {
           usePointStyle: true,
           padding: 20,
-          font: { weight: 'bold' as any, size: 12 }
+          font: { weight: 'bold' as const, size: 12 }
         }
       },
       tooltip: {
         backgroundColor: '#1e293b',
-        titleFont: { size: 14, weight: 'bold' as any },
+        titleFont: { size: 14, weight: 'bold' as const },
         bodyFont: { size: 13 },
         padding: 12,
         cornerRadius: 12,
