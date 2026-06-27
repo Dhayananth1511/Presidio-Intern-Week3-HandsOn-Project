@@ -10,7 +10,8 @@ on:
       - main
 
 jobs:
-  build:
+
+  lint:
 
     runs-on: ubuntu-latest
 
@@ -27,9 +28,43 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: npm
 
       - name: Install Dependencies
-        run: npm install
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+  build:
+
+    needs: lint
+
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: "task-manager(Hands On)"
+
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install Dependencies
+        run: npm ci
 
       - name: Build React App
         run: npm run build
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: react-task-manager-build
+          path: task-manager(Hands On)/dist
